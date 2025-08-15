@@ -31,32 +31,61 @@ const theme = {
   },
 };
 
-// Define valid route names
-type RouteNames = "index" | "history" | "camera" | "statistics" | "profile";
+// Define valid route names based on your actual routes
+type RouteNames = 
+  | "index" 
+  | "history" 
+  | "camera" 
+  | "statistics" 
+  | "profile"
+  | "questionnaire"
+  | "calendar"
+  | "devices"
+  | "recommended-menus"
+  | "ai-chat"
+  | "food-scanner";
 
 // Icon mapping using Ionicons
-const iconMap: Record<RouteNames, keyof typeof Ionicons.glyphMap> = {
+const iconMap: Record<string, string> = {
   index: "home-outline",
   history: "time-outline",
   camera: "camera-outline",
   statistics: "trending-up-outline",
   profile: "person-outline",
+  questionnaire: "clipboard-outline",
+  calendar: "calendar-outline",
+  devices: "watch-outline",
+  "recommended-menus": "restaurant-outline",
+  "ai-chat": "chatbubble-outline",
+  "food-scanner": "scan-outline",
 };
 
-const activeIconMap: Record<RouteNames, keyof typeof Ionicons.glyphMap> = {
+const activeIconMap: Record<string, string> = {
   index: "home",
   history: "time",
   camera: "camera",
   statistics: "trending-up",
   profile: "person",
+  questionnaire: "clipboard",
+  calendar: "calendar",
+  devices: "watch",
+  "recommended-menus": "restaurant",
+  "ai-chat": "chatbubble",
+  "food-scanner": "scan",
 };
 
-const tabLabels: Record<RouteNames, string> = {
+const tabLabels: Record<string, string> = {
   index: "Home",
   history: "History",
   camera: "Camera",
   statistics: "Stats",
   profile: "Profile",
+  questionnaire: "Survey",
+  calendar: "Calendar",
+  devices: "Devices",
+  "recommended-menus": "Menus",
+  "ai-chat": "AI Chat",
+  "food-scanner": "Scanner",
 };
 
 interface CustomTabBarProps {
@@ -140,7 +169,7 @@ function ScrollableTabBar({
       needsScrolling,
       totalWidth: currentX - 8 + 16, // Remove last gap, add end padding
     };
-  }, [state.index, state.routes.length]); // Only depend on these stable values
+  }, [state.index, state.routes.length]);
 
   // Animate indicator with smooth transitions
   const animateIndicator = useCallback(() => {
@@ -202,12 +231,11 @@ function ScrollableTabBar({
   const renderTab = useCallback(
     (route: { key: string; name: string }, index: number) => {
       const isFocused = state.index === index;
-      const routeName = route.name as RouteNames;
+      const routeName = route.name;
       const label = tabLabels[routeName] || route.name;
       const iconName = isFocused
-        ? activeIconMap[routeName]
-        : iconMap[routeName];
-      const fallbackIcon = isFocused ? "home" : "home-outline";
+        ? activeIconMap[routeName] || "home"
+        : iconMap[routeName] || "home-outline";
       const tabPosition = tabCalculations.tabPositions[index];
 
       if (!tabPosition) return null;
@@ -241,7 +269,7 @@ function ScrollableTabBar({
         >
           <View style={styles.tabContent}>
             <Ionicons
-              name={iconName || fallbackIcon}
+              name={iconName as any}
               size={ICON_SIZE}
               color={
                 isFocused ? theme.colors.primary : theme.colors.textSecondary
